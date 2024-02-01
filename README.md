@@ -3,7 +3,7 @@ Redis container image - AlphaTeam
 
 We forked this repo from : [scolrg](https://github.com/sclorg/redis-container/)
 
-On this repository we made some changes on redis 7 version in order to add more settings on the redis.conf file. 
+On this repository we made some changes on redis 7 version in order to add more settings to redis.conf file. 
 We edited files in ./7/root/usr
 
 Create Image
@@ -12,7 +12,7 @@ Create Image
 To build a Redis image, choose either the CentOS or RHEL based image:
 *  **RHEL based image**
 
-    We chose to create RHEL image for example so we will create the image from the matching DockerFile: Dockerfile.rhel9.
+    We chose to create RHEL image for example, so we will use the Dockerfile.rhel9 for image creation.
 
     First enter the folder of redis version you want to use:
 
