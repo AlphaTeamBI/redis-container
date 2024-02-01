@@ -34,7 +34,7 @@ Now you can use the image you created as the image of your redis service in open
 You can inject the followings environment variables in DeploymentConfig in order add redis.conf settings:
 
 ```
-    # Password for default user (recommanded)
+    # Password for default user recommanded
     REDIS_PASSWORD 
 
     # Set acl user - this user can use replicaof method and does not have full access to Redis instance (recommanded)
@@ -42,7 +42,7 @@ You can inject the followings environment variables in DeploymentConfig in order
     REPLICA_USER
     REPLICA_USER_PASSWORD
 
-    # # Set current redis instance as replicaof another redis instance if master props are defined (optional)
+    # Set current redis instance as replicaof another redis instance if master props are defined (optional)
 
     REDIS_REPLICA_MODE ("ON" / "OFF")
 
