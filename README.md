@@ -1,114 +1,54 @@
-Redis container image
-=====================
+Redis container image - AlphaTeam
+=================================
 
-[![Build and push images to Quay.io registry](https://github.com/sclorg/redis-container/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/sclorg/redis-container/actions/workflows/build-and-push.yml)
+We forked this repo from : [scolrg](https://github.com/sclorg/redis-container/)
 
-Images available on Quay are:
-* CentOS 7 [redis-6](https://quay.io/repository/centos7/redis-6-centos7)
-* CentOS Stream 8 [redis-6](https://quay.io/repository/sclorg/redis-6-c8s)
-* CentOS Stream 9 [redis-6](https://quay.io/repository/sclorg/redis-6-c9s)
-* Fedora [redis-6](https://quay.io/repository/fedora/redis-6)
-* Fedora [redis-7](https://quay.io/repository/fedora/redis-7)
+On this repository we made some changes on redis 7 version in order to add more settings on the redis.conf file. 
+We edited files in ./7/root/usr
 
-This repository contains Dockerfiles for Redis container image.
-Users can choose between RHEL, Fedora and CentOS based images.
-
-For more information about contributing, see
-[the Contribution Guidelines](https://github.com/sclorg/welcome/blob/master/contribution.md).
-For more information about concepts used in these container images, see the
-[Landing page](https://github.com/sclorg/welcome).
-
-
-Versions
---------
-Redis version currently provided are:
-* [redis-6](6)
-* [redis-7](7)
-
-RHEL versions currently supported are:
-* RHEL7
-* RHEL8
-* RHEL9
-
-CentOS versions currently supported are:
-* CentOS7
-* CentOS Stream 8
-* CentOS Stream 9
-
-
-Installation
+Create Image
 ------------
+
 To build a Redis image, choose either the CentOS or RHEL based image:
 *  **RHEL based image**
 
-    These images are available in the [Red Hat Container Catalog](https://access.redhat.com/containers/#/registry.access.redhat.com/rhscl/redis-6-rhel7).
-    To download it run:
+    We chose to create RHEL image for example so we will create the image from the matching DockerFile: Dockerfile.rhel9.
+
+    First enter the folder of redis version you want to use:
 
     ```
-    $ podman pull registry.access.redhat.com/rhscl/redis-6-rhel7
+     cd ./7
     ```
+    * Before running, make sure all files in this folder set to LF (End of line sequence) 
 
-    To build a RHEL based Redis image, you need to run the build on a properly
-    subscribed RHEL machine.
-
-    ```
-    $ git clone --recursive https://github.com/sclorg/redis-container.git
-    $ cd redis-container
-    $ git submodule update --init
-    $ make build TARGET=rhel7 VERSIONS=6
-    ```
-
-*  **CentOS based image**
-
-    This image is available on DockerHub. To download it run:
+    Now, you can create the image
 
     ```
-    $ podman pull quay.io/centos7/redis-6-centos7
+     docker build -t redis:7-el9 -f ./Dockerfile.rhel9 .
     ```
 
-    To build a Redis image from scratch run:
+Use Image in Deployment
+-----------------------
+Now you can use the image you created as the image of your redis service in openshift.
 
-    ```
-    $ git clone --recursive https://github.com/sclorg/redis-container.git
-    $ cd redis-container
-    $ git submodule update --init
-    $ make build TARGET=centos7 VERSIONS=6
-    ```
+You can inject the followings environment variables in DeploymentConfig in order add redis.conf settings:
 
-Note: while the installation steps are calling `podman`, you can replace any such calls by `docker` with the same arguments.
+```
+    # Password for default user (recommanded)
+    REDIS_PASSWORD 
 
-**Notice: By omitting the `VERSIONS` parameter, the build/test action will be performed
-on all provided versions of Redis.**
+    # Set acl user - this user can use replicaof method and does not have full access to Redis instance (recommanded)
 
+    REPLICA_USER
+    REPLICA_USER_PASSWORD
 
-Usage
------
+    # # Set current redis instance as replicaof another redis instance if master props are defined (optional)
 
-For information about usage of Dockerfile for Redis 6,
-see [usage documentation](6).
+    REDIS_REPLICA_MODE ("ON" / "OFF")
 
-Test
-----
-Users can choose between testing a Redis test application based on a RHEL or CentOS image.
+    # Variables you have to define if you set REDIS_REPLICA_MODE="ON"
 
-*  **RHEL based image**
-
-    To test a RHEL7 based Redis image, you need to run the test on a properly
-    subscribed RHEL machine.
-
-    ```
-    $ cd redis-container
-    $ git submodule update --init
-    $ make test TARGET=rhel7 VERSIONS=6
-    ```
-
-*  **CentOS based image**
-
-    ```
-    $ cd redis-container
-    $ git submodule update --init
-    $ make test TARGET=centos7 VERSIONS=6
-    ```
-
-**Notice: By omitting the `VERSIONS` parameter, the build/test action will be performed
-on all provided versions of Redis.**
+    REDIS_MASTER_IP
+    REDIS_MASTER_PORT
+    REDIS_MASTER_PASSWORD
+```
