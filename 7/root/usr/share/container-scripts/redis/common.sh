@@ -14,6 +14,8 @@ redis_password_regex='^[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]+$'
 function unset_env_vars() {
   log_info 'Cleaning up environment variable REDIS_PASSWORD ...'
   unset REDIS_PASSWORD
+  unset REPLICA_PASSWORD
+  unset REDIS_MASTER_PASSWORD
 }
 
 # Comment out settings that we'll set in container specifically

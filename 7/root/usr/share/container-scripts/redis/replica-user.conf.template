@@ -1,0 +1,2 @@
+# Set acl user - this user can use replicaof method and does not have full access to Redis instances
+user "${REPLICA_USER}" +psync +replconf +ping on >"${REPLICA_USER_PASSWORD}"

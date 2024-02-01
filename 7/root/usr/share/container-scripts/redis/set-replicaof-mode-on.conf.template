@@ -1,0 +1,5 @@
+# password for authentication with master
+masterauth "${REDIS_MASTER_PASSWORD}"
+
+# turn on replicaof mode
+replicaof "${REDIS_MASTER_IP}" "${REDIS_MASTER_PORT}"

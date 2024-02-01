@@ -8,10 +8,28 @@ set -eu
 
 # Process the Redis configuration files
 log_info 'Processing Redis configuration files ...'
+
+# Set default user password
 if [[ -v REDIS_PASSWORD ]]; then
-  envsubst < ${CONTAINER_SCRIPTS_PATH}/password.conf.template >> "${REDIS_CONF}"
+  envsubst < ${CONTAINER_SCRIPTS_PATH}/default-user.conf.template >> "${REDIS_CONF}"
 else
   log_info 'WARNING: setting REDIS_PASSWORD is recommended'
+fi
+
+# Set user that have priviliges to use the command "replicaof" but does not have full access to your Redis instances
+if [[ -v REPLICA_USER ]] && [[ -v REPLICA_USER_PASSWORD ]]; then
+  envsubst < ${CONTAINER_SCRIPTS_PATH}/replica-user.conf.template >> "${REDIS_CONF}"
+else
+  log_info 'NOTE: setting REPLICA_USER with REPLICA_USER_PASSWORD is recommended (Replica user is a user that have priviliges to use the command "replicaof" but does not have full access to your Redis instances)'
+fi
+
+# Set current redis instance as replicaof another redis instance if master props are defined 
+if [[ "${REDIS_REPLICA_MODE}" == "ON" ]]; then
+  if [[ -v REDIS_MASTER_IP ]] && [[ -v REDIS_MASTER_PORT ]] && [[ -v REDIS_MASTER_PASSWORD ]]; then
+    envsubst < ${CONTAINER_SCRIPTS_PATH}/set-replicaof-mode-on.conf.template >> "${REDIS_CONF}"
+  else
+    log_info 'WARNING: You have defined the replica mode, thus you also need to declare REDIS_MASTER_IP, REDIS_MASTER_PORT and REDIS_MASTER_PASSWORD. Replica mode will remain off until you modify that.'
+  fi
 fi
 
 # Source post-init source if exists

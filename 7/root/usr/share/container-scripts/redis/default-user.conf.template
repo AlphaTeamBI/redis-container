@@ -1,0 +1,2 @@
+# password for default user
+requirepass "${REDIS_PASSWORD}"
