@@ -4,7 +4,7 @@ Redis container image - AlphaTeam
 We forked this repo from : [scolrg](https://github.com/sclorg/redis-container/)
 
 On this repository we made some changes on redis 7 version in order to add more settings to redis.conf file. 
-We edited files in ./7/root/usr
+We edited files in  [./7/root/usr](https://github.com/AlphaTeamBI/redis-container/tree/master/7)
 
 Create Image
 ------------
